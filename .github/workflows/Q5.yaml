@@ -1,0 +1,27 @@
+name: Q5 - Archive avec date
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  archive-date:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Créer l'archive datée
+        run: |
+          DATE=$(date +%d-%m-%Y)
+          FICHIER="Q5_archive_${DATE}.txt"
+          echo "Nom : Paul Gricourt" > "$FICHIER"
+          echo "--- Code de Q5.java ---" >> "$FICHIER"
+          cat Q5.java >> "$FICHIER"
+
+      - name: Commit et Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Q5 - Ajout automatique de l'archive datée"
