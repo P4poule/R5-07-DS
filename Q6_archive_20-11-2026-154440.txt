@@ -1,0 +1,18 @@
+Nom : Paul Gricourt
+--- Code de Q6.java ---
+public class Q6 {
+    public static void main(String[] args) {
+        if (args.length < 1) return;
+        int n = Integer.parseInt(args[0]);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                System.out.print("x ");
+            }
+            System.out.println();
+        }
+    }
+}
+--- Statistiques de Q6.java ---
+Nombre de lignes : 13
+Nombre de caractères : 330
