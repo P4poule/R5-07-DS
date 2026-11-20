@@ -2,6 +2,9 @@ name: Q6 - Archive avec diff
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '*_archive_*.txt'
+      - 'Q6_différences.txt'
   workflow_dispatch:
 
 jobs:
@@ -27,7 +30,6 @@ jobs:
           echo "Nombre de lignes : $(wc -l < Q6.java)" >> "$NOUVEAU"
           echo "Nombre de caractères : $(wc -m < Q6.java)" >> "$NOUVEAU"
 
-          # Trouver l'archive Q6 la plus récente autre que celle qu'on vient de créer
           PRECEDENT=$(ls -t Q6_archive_*.txt 2>/dev/null | head -n 2 | tail -n 1)
 
           if [ -n "$PRECEDENT" ] && [ -f "$PRECEDENT" ]; then
@@ -36,11 +38,21 @@ jobs:
             echo "Aucune archive précédente trouvée pour comparaison." > Q6_différences.txt
           fi
 
-      - name: Récupérer les dernières modifications (Rebase)
-        run: git pull --rebase origin main
-
       - name: Commit et Push
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Q6 - Ajout archive et différences"
-          file_pattern: 'Q6_archive_*.txt Q6_différences.txt'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Q6_archive_*.txt Q6_différences.txt
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Q6 - Ajout archive et différences"
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+            sleep "$attempt"
+          done
+          exit 1
