@@ -1,0 +1,6 @@
+Nom : PRENOM NOM
+Date d'exécution : Fri Nov 20 15:05:48 UTC 2026
+--- Contenu de XYZ.txt ---
+XYZ
+--- Taille de XYZ.txt (en octets) ---
+4 XYZ.txt
