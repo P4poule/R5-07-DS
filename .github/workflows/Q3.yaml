@@ -2,6 +2,9 @@ name: Q3 - Archive du code Java
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '*_archive_*.txt'
+      - 'Q6_différences.txt'
   workflow_dispatch:
 
 jobs:
@@ -20,6 +23,20 @@ jobs:
           cat Q3.java >> Q3_archive_java.txt
 
       - name: Commit et Push
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Q3 - Ajout automatique de Q3_archive_java.txt"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Q3_archive_java.txt
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Q3 - Ajout automatique de Q3_archive_java.txt"
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            git fetch origin main
+            git rebase origin/main
+            sleep "$attempt"
+          done
+          exit 1
