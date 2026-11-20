@@ -1,0 +1,25 @@
+name: Q3 - Archive du code Java
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  archive-java:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Créer l'archive avec le code Java
+        run: |
+          echo "Nom : Paul Gricourt" > Q3_archive_java.txt
+          echo "--- Code de Q3.java ---" >> Q3_archive_java.txt
+          cat Q3.java >> Q3_archive_java.txt
+
+      - name: Commit et Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Q3 - Ajout automatique de Q3_archive_java.txt"
