@@ -36,6 +36,9 @@ jobs:
             echo "Aucune archive précédente trouvée pour comparaison." > Q6_différences.txt
           fi
 
+      - name: Récupérer les dernières modifications (Rebase)
+        run: git pull --rebase origin main
+
       - name: Commit et Push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
