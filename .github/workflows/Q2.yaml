@@ -1,0 +1,28 @@
+name: Q2 - Archive avec métadonnées
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Créer l'archive avec métadonnées
+        run: |
+          echo "Nom : PRENOM NOM" > Q2_archive_XYZ.txt
+          echo "Date d'exécution : $(date)" >> Q2_archive_XYZ.txt
+          echo "--- Contenu de XYZ.txt ---" >> Q2_archive_XYZ.txt
+          cat XYZ.txt >> Q2_archive_XYZ.txt
+          echo "--- Taille de XYZ.txt (en octets) ---" >> Q2_archive_XYZ.txt
+          wc -c XYZ.txt >> Q2_archive_XYZ.txt
+
+      - name: Commit et Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Q2 - Ajout automatique de Q2_archive_XYZ.txt"
