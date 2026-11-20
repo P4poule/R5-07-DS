@@ -1,0 +1,22 @@
+name: Q1 - Copie de fichier
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  copie:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Copier le contenu de XYZ.txt
+        run: cat XYZ.txt > Q1_archive_XYZ.txt
+
+      - name: Commit et Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Q1 - Ajout automatique de Q1_archive_XYZ.txt"
