@@ -1,0 +1,43 @@
+name: Q6 - Archive avec diff
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  archive-avancee:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Créer la nouvelle archive et le fichier de différences
+        run: |
+          TIMESTAMP=$(date +%d-%m-%Y-%H%M%S)
+          NOUVEAU="Q6_archive_${TIMESTAMP}.txt"
+
+          echo "Nom : Paul Gricourt" > "$NOUVEAU"
+          echo "--- Code de Q6.java ---" >> "$NOUVEAU"
+          cat Q6.java >> "$NOUVEAU"
+          echo "--- Statistiques de Q6.java ---" >> "$NOUVEAU"
+          echo "Nombre de lignes : $(wc -l < Q6.java)" >> "$NOUVEAU"
+          echo "Nombre de caractères : $(wc -m < Q6.java)" >> "$NOUVEAU"
+
+          # Trouver l'archive Q6 la plus récente autre que celle qu'on vient de créer
+          PRECEDENT=$(ls -t Q6_archive_*.txt 2>/dev/null | head -n 2 | tail -n 1)
+
+          if [ -n "$PRECEDENT" ] && [ -f "$PRECEDENT" ]; then
+            diff "$PRECEDENT" "$NOUVEAU" > Q6_différences.txt || true
+          else
+            echo "Aucune archive précédente trouvée pour comparaison." > Q6_différences.txt
+          fi
+
+      - name: Commit et Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Q6 - Ajout archive et différences"
+          file_pattern: 'Q6_archive_*.txt Q6_différences.txt'
